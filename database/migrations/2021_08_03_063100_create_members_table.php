@@ -20,10 +20,14 @@ class CreateMembersTable extends Migration
             $table->string('email')->unique();
             $table->text('info')->nullable();
             $table->tinyInteger('is_active')->default(1);
-            $table->timestamp('created_at')->useCurrent();
+
+            $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
+            $table->timestamp('deleted_at')->nullable();
+
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');
+            $table->foreignId('deleted_by')->nullable()->constrained('users');
         });
     }
 

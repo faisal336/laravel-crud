@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\GetTableNameStatically;
+use App\Traits\ModelObservant;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -20,6 +22,8 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use ModelObservant;
+    use GetTableNameStatically;
 
     /**
      * The attributes that are mass assignable.
@@ -52,6 +56,9 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     /**

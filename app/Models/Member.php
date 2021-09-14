@@ -7,7 +7,7 @@ use App\Traits\ModelObservant;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\CanGetTableNameStatically;
+use App\Traits\GetTableNameStatically;
 
 /**
  * @mixin IdeHelperMember
@@ -16,7 +16,7 @@ class Member extends Model
 {
     use HasFactory;
     use ModelObservant;
-    use CanGetTableNameStatically;
+    use GetTableNameStatically;
 
     /**
      * The attributes that are mass assignable.
@@ -45,6 +45,7 @@ class Member extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     /**

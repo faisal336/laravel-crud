@@ -10,7 +10,7 @@ class ModelObserver
 
     public function __construct($userID = null)
     {
-        $this->userID = $userID ?? Auth()->id();
+        $this->userID = $userID ?: Auth()->id();
     }
 
     /**
@@ -48,5 +48,16 @@ class ModelObserver
     public function updating(Model $model): void
     {
         $model->updated_by = $this->userID;
+    }
+
+    /**
+     * Handle the Model "deleting" event.
+     *
+     * @param  Model  $model
+     * @return void
+     */
+    public function deleting(Model $model): void
+    {
+        $model->deleted_by = $this->userID;
     }
 }

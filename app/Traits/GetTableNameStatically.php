@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-trait CanGetTableNameStatically
+trait GetTableNameStatically
 {
     public static function getTableName(): string
     {
