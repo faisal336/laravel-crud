@@ -16,7 +16,7 @@ class MemberSeeder extends Seeder
     {
         $faker = \Faker\Factory::create();
 
-        $noOfColumns = 5;
+        $noOfColumns = 15;
         $noOfRows = 500000;
 
         $range = range(1, $noOfRows);
