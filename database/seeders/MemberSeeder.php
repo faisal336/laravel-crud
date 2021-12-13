@@ -31,7 +31,7 @@ class MemberSeeder extends Seeder
                     'first_name' => $faker->firstName(),
                     'last_name' => $faker->lastName(),
                     'email' => $faker->unique()->safeEmail(),
-                    'info' => 'Favorite number: ' . $i . '' . $num,
+                    'info' => 'Favorite number: ' . $i . $num,
                     'is_active' => $num,
                 ];
             }

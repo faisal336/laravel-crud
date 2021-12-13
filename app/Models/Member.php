@@ -66,8 +66,8 @@ class Member extends Model
      */
     protected static function booted(): void
     {
-        parent::booted();
-        static::addGlobalScope(new WhereUserIsActive());
+        parent::boot();
+        static::addGlobalScope(new WhereUserIsActive);
     }
 
     /**

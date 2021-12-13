@@ -10,7 +10,11 @@ class ModelObserver
 
     public function __construct($userID = null)
     {
-        $this->userID = $userID ?: Auth()->id();
+        if (is_null($userID)) {
+            $this->userID = auth()->id() ?: Auth('api')->id();
+        } else {
+            $this->userID = $userID;
+        }
     }
 
     /**
