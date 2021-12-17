@@ -10,7 +10,8 @@ use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class MemberController extends Controller
 {
@@ -27,22 +28,28 @@ class MemberController extends Controller
     /**
      * Returns a listing of the members in paginated DataTable json format.
      *
-     * @return JsonResponse
+     * @return array
      * @throws Exception MemberService $memberService
      */
-    public function list(): JsonResponse
+    public function list(): array
     {
-        return $this->memberService->allDTPaginated();
+        return $this->memberService->paginate();
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return View|Factory
+     * @param Request $request
+     * @return array|Factory|View
+     * @throws Exception
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('resource.members.index');
+        if ($request->expectsJson()) {
+            return $this->list();
+        }
+
+        return view('members.index');
     }
 
     /**
@@ -52,46 +59,69 @@ class MemberController extends Controller
      */
     public function create()
     {
-        $formAction = route('members.store');
+        $data['member'] = new Member;
+        $data['formAction'] = route('members.store');
 
-        return view('resource.members.form', ['member' => new Member(), 'formAction' => $formAction]);
+        return view('members.form', $data);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param MemberCreateRequest $request
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function store(MemberCreateRequest $request): RedirectResponse
+    public function store(MemberCreateRequest $request): JsonResponse
     {
-        $member = Member::create($request->validated());
+        try {
+            $member = Member::create($request->validated());
+        } catch (QueryException $e) {
+            $errorMessage = json_encode($e->errorInfo);
 
-        return redirect()->route('members.show', $member->id)->with('success', 'Member Created!');
+            if ($e->errorInfo[1] === 1062) {
+                $errorMessage = explode(" for ", $e->errorInfo[2])[0];
+            }
+
+            return $this->sendError($errorMessage);
+        } catch (\Exception $e) {
+            $errorMessage = $e->getMessage();
+
+            return $this->sendError($errorMessage, [], 500);
+        }
+
+        return $this->sendResponse("User created successfully", $member->toArray());
     }
 
     /**
      * Display the specified resource.
      *
+     * @param Request $request
      * @param Member $member
-     * @return View|Factory
+     * @return JsonResponse|View|Factory
      */
-    public function show(Member $member)
+    public function show(Request $request, Member $member)
     {
-        return view('resource.members.show', ['member' => $member]);
+        if ($request->expectsJson()) {
+            return $this->sendResponse("", $member->toArray());
+        }
+
+        $data['member'] = $member;
+
+        return view('members.show', $data);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param Member $member
-     * @return View|Factory
+     * @return JsonResponse|View|Factory
      */
     public function edit(Member $member)
     {
-        $formAction = route('members.update', $member->id);
+        $data['member'] = $member;
+        $data['formAction'] = route('members.update', $member->id);
 
-        return view('resource.members.form', ['member' => $member, 'formAction' => $formAction]);
+        return view('members.form', $data);
     }
 
     /**
@@ -99,25 +129,53 @@ class MemberController extends Controller
      *
      * @param MemberEditRequest $request
      * @param Member $member
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function update(MemberEditRequest $request, Member $member): RedirectResponse
+    public function update(MemberEditRequest $request, Member $member): JsonResponse
     {
-        $member->update($request->validated());
+        try {
+            $member->update($request->validated());
+        } catch (QueryException $e) {
+            $errorMessage = json_encode($e->errorInfo);
 
-        return back()->with('success', 'Member Updated!');
+            if ($e->errorInfo[1] === 1062) {
+                $errorMessage = explode(" for ", $e->errorInfo[2])[0];
+            }
+
+            return $this->sendError($errorMessage);
+        } catch (\Exception $e) {
+            $errorMessage = $e->getMessage();
+
+            return $this->sendError($errorMessage, [], 500);
+        }
+
+        return $this->sendResponse("User Updated successfully");
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Member $member
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function destroy(Member $member): RedirectResponse
+    public function destroy(Member $member): JsonResponse
     {
-        $member->delete();
+        try {
+            $member->delete();
+        } catch (QueryException $e) {
+            $errorMessage = json_encode($e->errorInfo);
 
-        return back()->with('success', 'Member Deleted!');
+            if ($e->errorInfo[1] === 1062) {
+                $errorMessage = explode(" for ", $e->errorInfo[2])[0];
+            }
+
+            return $this->sendError($errorMessage);
+        } catch (\Exception $e) {
+            $errorMessage = $e->getMessage();
+
+            return $this->sendError($errorMessage, [], 500);
+        }
+
+        return $this->sendResponse("User Deleted successfully");
     }
 }

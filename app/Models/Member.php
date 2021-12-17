@@ -8,6 +8,7 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\GetTableNameStatically;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @mixin IdeHelperMember
@@ -15,6 +16,7 @@ use App\Traits\GetTableNameStatically;
 class Member extends Model
 {
     use HasFactory;
+    use SoftDeletes;
     use ModelObservant;
     use GetTableNameStatically;
 
