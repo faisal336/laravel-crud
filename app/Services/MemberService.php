@@ -28,15 +28,6 @@ class MemberService
             ->limit(request('length', 10))
             ->get();
 
-        foreach($members as $key => $member) {
-            $member->action = '
-                <a href="' . route('members.show', ['member' => $member->id]) . '" class="edit btn btn-primary btn-sm"><i class="fa fa-eye"></i></a> |
-                <a href="' . route('members.edit', ['member' => $member->id]) . '" class="edit btn btn-success btn-sm"><i class="fa fa-edit"></i></a> |
-                <button type="button" class="destroy btn btn-danger btn-sm" id="deleteRecord" onclick="deleteRecord(' . $member->id . ')"><i class="fa fa-trash"></i></button>
-
-            ';
-        }
-
         $response = [];
         $response['draw'] = request('draw', 1);
         $response['data'] = $members;

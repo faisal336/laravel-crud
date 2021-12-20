@@ -89,7 +89,7 @@ class MemberController extends Controller
             return $this->sendError($errorMessage, [], 500);
         }
 
-        return $this->sendResponse("User created successfully", $member->toArray());
+        return $this->sendResponse("User created successfully", $member);
     }
 
     /**
@@ -102,7 +102,7 @@ class MemberController extends Controller
     public function show(Request $request, Member $member)
     {
         if ($request->expectsJson()) {
-            return $this->sendResponse("", $member->toArray());
+            return $this->sendResponse("", $member);
         }
 
         $data['member'] = $member;
@@ -146,7 +146,7 @@ class MemberController extends Controller
         } catch (\Exception $e) {
             $errorMessage = $e->getMessage();
 
-            return $this->sendError($errorMessage, [], 500);
+            return $this->sendError($errorMessage, null, 500);
         }
 
         return $this->sendResponse("User Updated successfully");
@@ -173,7 +173,7 @@ class MemberController extends Controller
         } catch (\Exception $e) {
             $errorMessage = $e->getMessage();
 
-            return $this->sendError($errorMessage, [], 500);
+            return $this->sendError($errorMessage, null, 500);
         }
 
         return $this->sendResponse("User Deleted successfully");

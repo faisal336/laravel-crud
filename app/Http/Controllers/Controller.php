@@ -16,10 +16,10 @@ class Controller extends BaseController
      * success response method.
      *
      * @param string $message
-     * @param array $data
+     * @param $data
      * @return JsonResponse
      */
-    public function sendResponse(string $message, array $data = [], int $code = 200): JsonResponse
+    public function sendResponse(string $message, $data = null, int $code = 200): JsonResponse
     {
         $response = [
             'message' => $message,
@@ -36,11 +36,11 @@ class Controller extends BaseController
      * return error response.
      *
      * @param string $message
-     * @param array $data
+     * @param $data
      * @param int $code
      * @return JsonResponse
      */
-    public function sendError(string $message, array $data = [], int $code = 400): JsonResponse
+    public function sendError(string $message, $data = null, int $code = 400): JsonResponse
     {
         $response = [
             'message' => $message,
