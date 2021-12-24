@@ -9,7 +9,7 @@ use App\Services\MemberService;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 
@@ -69,27 +69,36 @@ class MemberController extends Controller
      * Store a newly created resource in storage.
      *
      * @param MemberCreateRequest $request
-     * @return JsonResponse
+     * @return Response
      */
-    public function store(MemberCreateRequest $request): JsonResponse
+    public function store(MemberCreateRequest $request): Response
     {
         try {
-            $member = Member::create($request->validated());
-        } catch (QueryException $e) {
-            $errorMessage = json_encode($e->errorInfo);
+            $validatedData = $request->validated();
 
-            if ($e->errorInfo[1] === 1062) {
-                $errorMessage = explode(" for ", $e->errorInfo[2])[0];
+            if ($request->hasFile('member_image')) {
+                $validatedData['image_path'] = $request->member_image->store('public/members');
+                $validatedData['image_path'] = str_replace('public/members/', 'storage/members/', $validatedData['image_path']);
             }
 
-            return $this->sendError($errorMessage);
-        } catch (\Exception $e) {
-            $errorMessage = $e->getMessage();
+            $member = Member::create($validatedData);
 
-            return $this->sendError($errorMessage, [], 500);
+            $message = $member->id;
+            $statusCode = 200;
+        } catch (QueryException $e) {
+            $message = json_encode($e->errorInfo);
+            $statusCode = 400;
+
+            if ($e->errorInfo[1] === 1062) {
+                $message = explode(" for ", $e->errorInfo[2])[0];
+                $statusCode = 409;
+            }
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            $statusCode = 500;
         }
 
-        return $this->sendResponse("User created successfully", $member);
+        return response($message, $statusCode);
     }
 
     /**
@@ -97,12 +106,12 @@ class MemberController extends Controller
      *
      * @param Request $request
      * @param Member $member
-     * @return JsonResponse|View|Factory
+     * @return Response|View|Factory
      */
     public function show(Request $request, Member $member)
     {
         if ($request->expectsJson()) {
-            return $this->sendResponse("", $member);
+            return response($member);
         }
 
         $data['member'] = $member;
@@ -114,7 +123,7 @@ class MemberController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param Member $member
-     * @return JsonResponse|View|Factory
+     * @return View|Factory
      */
     public function edit(Member $member)
     {
@@ -129,53 +138,73 @@ class MemberController extends Controller
      *
      * @param MemberEditRequest $request
      * @param Member $member
-     * @return JsonResponse
+     * @return Response
      */
-    public function update(MemberEditRequest $request, Member $member): JsonResponse
+    public function update(MemberEditRequest $request, Member $member): Response
     {
         try {
             $member->update($request->validated());
+
+            $message = 'User Updated successfully';
+            $statusCode = 200;
         } catch (QueryException $e) {
-            $errorMessage = json_encode($e->errorInfo);
+            $message = json_encode($e->errorInfo);
+            $statusCode = 400;
 
             if ($e->errorInfo[1] === 1062) {
-                $errorMessage = explode(" for ", $e->errorInfo[2])[0];
+                $message = explode(" for ", $e->errorInfo[2])[0];
+                $statusCode = 409;
             }
-
-            return $this->sendError($errorMessage);
         } catch (\Exception $e) {
-            $errorMessage = $e->getMessage();
-
-            return $this->sendError($errorMessage, null, 500);
+            $message = $e->getMessage();
+            $statusCode = 500;
         }
 
-        return $this->sendResponse("User Updated successfully");
+        return response($message, $statusCode);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Member $member
-     * @return JsonResponse
+     * @return Response
      */
-    public function destroy(Member $member): JsonResponse
+    public function destroy(Member $member): Response
     {
         try {
             $member->delete();
+
+            $message = 'User Deleted successfully';
+            $statusCode = 200;
         } catch (QueryException $e) {
-            $errorMessage = json_encode($e->errorInfo);
-
-            if ($e->errorInfo[1] === 1062) {
-                $errorMessage = explode(" for ", $e->errorInfo[2])[0];
-            }
-
-            return $this->sendError($errorMessage);
+            $message = json_encode($e->errorInfo);
+            $statusCode = 400;
         } catch (\Exception $e) {
-            $errorMessage = $e->getMessage();
-
-            return $this->sendError($errorMessage, null, 500);
+            $message = $e->getMessage();
+            $statusCode = 500;
         }
 
-        return $this->sendResponse("User Deleted successfully");
+        return response($message, $statusCode);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function showTable(Request $request): Response
+    {
+        $id = $request->input('id', 0);
+        $table = "
+            <table class='table table-striped'>
+            <tr>
+                <td>something: $id</td>
+                <td>something</td>
+                <td>something</td>
+                <td>something</td>
+            </tr>
+            </table>
+        ";
+
+        return response($table);
     }
 }

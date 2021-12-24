@@ -21,6 +21,7 @@ class MemberService
             'last_name',
             'email',
             'info',
+            'image_path',
             'is_active',
             'created_at'
         )

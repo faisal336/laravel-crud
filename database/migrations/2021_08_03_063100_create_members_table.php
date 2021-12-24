@@ -19,6 +19,7 @@ class CreateMembersTable extends Migration
             $table->string('last_name');
             $table->string('email')->unique();
             $table->text('info')->nullable();
+            $table->string('image_path')->nullable();
             $table->tinyInteger('is_active')->default(1);
 
             $table->timestamp('created_at')->nullable()->useCurrent();

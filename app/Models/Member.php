@@ -30,6 +30,7 @@ class Member extends Model
         'last_name',
         'email',
         'info',
+        'image_path',
     ];
 
     /**
@@ -49,6 +50,10 @@ class Member extends Model
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
+    /**
+     * @var mixed|string
+     */
+
 
     /**
      * Prepare a date for array / JSON serialization.
@@ -91,5 +96,16 @@ class Member extends Model
     public function getFullNameAttribute(): string
     {
         return "{$this->first_name} {$this->last_name}";
+    }
+
+    /**
+     * Get the image URL.
+     *
+     * @param string|null $value
+     * @return string
+     */
+    public function getImagePathAttribute(?string $value): ?string
+    {
+        return asset($value);
     }
 }

@@ -12,7 +12,9 @@ use Illuminate\Validation\Rule;
 class MemberCreateRequest extends FormRequest
 {
     private $table;
-
+    /**
+     * @var mixed|string
+     */
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -36,7 +38,8 @@ class MemberCreateRequest extends FormRequest
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email',
-            'info' => 'nullable|string'
+            'info' => 'nullable|string',
+            'image_path' => 'nullable',
         ];
     }
 }

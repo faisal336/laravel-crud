@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Members</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    {{-- bootstrap-5 css --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    {{-- fontawesome-5 css --}}
-    <link href="{{ asset('css/fontawesome.min.css') }}" rel="stylesheet">
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Dashboard') }}
+        </h2>
+    </x-slot>
 
     <style>
         i.required {
@@ -19,8 +14,7 @@
             font-size: 0.5em;
         }
     </style>
-</head>
-<body>
+
 
 <div class="container mt-5">
     @if(session('success'))
@@ -30,7 +24,7 @@
     @endif
 
     <div class="mt-3">
-        <a href="{{ route('members.index') }}">Listing</a> > <i class="text-gray-200">Member</i>
+        <a href="{{ route('members.index') }}">Listing</a> > <i class="">Member</i>
     </div>
     <div class="mt-3">
         Full Name: {{ $member->full_name }}
@@ -40,6 +34,9 @@
     </div>
     <div class="mt-3">
         Info: {{ $member->info }}
+    </div>
+    <div class="mt-3">
+        File: {{ $member->image_path }}
     </div>
     <div class="mt-3">
         Is active: {{ $member->is_active ? 'Yes' : 'No' }}
@@ -58,7 +55,4 @@
     });
 </script>
 
-</body>
-
-</html>
-
+</x-app-layout>
