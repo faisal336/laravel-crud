@@ -20,7 +20,6 @@ namespace App\Models{
  * @property string $last_name
  * @property string $email
  * @property string|null $info
- * @property string|null $image_path
  * @property int $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -29,6 +28,7 @@ namespace App\Models{
  * @property int|null $updated_by
  * @property int|null $deleted_by
  * @property-read string $full_name
+ * @property-read string $image_path
  * @method static \Database\Factories\MemberFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Member newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Member newQuery()
@@ -41,7 +41,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Member whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Member whereFirstName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Member whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Member whereImagePath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Member whereInfo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Member whereIsActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Member whereLastName($value)

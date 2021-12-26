@@ -17,9 +17,7 @@
         "laravel/jetstream": "^2.3",
         "laravel/sanctum": "^2.13",
         "laravel/tinker": "^2.5",
-        "livewire/livewire": "^2.5",
-        "yajra/laravel-datatables": "1.5",
-        "yajra/laravel-datatables-oracle": "~9.0"
+        "livewire/livewire": "^2.5"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
