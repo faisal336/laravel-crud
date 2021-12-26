@@ -25,9 +25,6 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/members/get-inner-html', [MemberController::class, 'showTable'])->name('members.getInnerHTML');
-    Route::get('/members/list', [MemberController::class, 'list'])->name('members.list');
-    Route::resource('/members', MemberController::class);
+    Route::resource('members', MemberController::class);
 });
 
-//Route::get('/members/list', [MemberController::class, 'list'])->name('members.list');
-//Route::resource('/members', MemberController::class);

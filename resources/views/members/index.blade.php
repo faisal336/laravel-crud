@@ -48,7 +48,7 @@
                 processing: true,
                 serverSide: true,
                 bFilter: false,
-                ajax: "{{ route('members.list') }}",
+                ajax: "{{ route('members.index') }}",
 
                 columns: [
                     {"data": "id", name: 'id', orderable: false, searchable: false,

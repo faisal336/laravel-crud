@@ -4,15 +4,16 @@ namespace App\Services;
 
 use App\Models\Member;
 use Illuminate\Support\Facades\DB;
-use Yajra\DataTables\Facades\DataTables;
 
 class MemberService
 {
     /**
-     * @throws \Exception
+     * @return array
      */
-    public function paginate()
+    public function paginate(): array
     {
+        $request = request();
+
         $recordsTotal = Member::select(DB::raw('count(*) count'))->value('count');
 
         $members = Member::query()->select(
@@ -25,12 +26,12 @@ class MemberService
             'is_active',
             'created_at'
         )
-            ->offset(request('start', 0))
-            ->limit(request('length', 10))
+            ->offset($request->input('start', 0))
+            ->limit($request->input('length', 10))
             ->get();
 
         $response = [];
-        $response['draw'] = request('draw', 1);
+        $response['draw'] = $request->input('draw', 1);
         $response['data'] = $members;
         $response['recordsTotal'] = $recordsTotal;
         $response['recordsFiltered'] = $recordsTotal;

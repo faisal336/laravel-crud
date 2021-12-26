@@ -20,20 +20,9 @@ class MemberController extends Controller
      */
     private $memberService;
 
-    public function __construct(MemberService $memberService)
+    public function __construct()
     {
-        $this->memberService = $memberService;
-    }
-
-    /**
-     * Returns a listing of the members in paginated DataTable json format.
-     *
-     * @return array
-     * @throws Exception MemberService $memberService
-     */
-    public function list(): array
-    {
-        return $this->memberService->paginate();
+        $this->memberService = new MemberService;
     }
 
     /**
@@ -46,7 +35,7 @@ class MemberController extends Controller
     public function index(Request $request)
     {
         if ($request->expectsJson()) {
-            return $this->list();
+            return $this->memberService->paginate();
         }
 
         return view('members.index');
@@ -60,7 +49,6 @@ class MemberController extends Controller
     public function create()
     {
         $data['member'] = new Member;
-        $data['formAction'] = route('members.store');
 
         return view('members.form', $data);
     }
@@ -86,12 +74,17 @@ class MemberController extends Controller
             $message = $member->id;
             $statusCode = 200;
         } catch (QueryException $e) {
-            $message = json_encode($e->errorInfo);
-            $statusCode = 400;
+            try {
+                $message = json_encode($e->errorInfo, JSON_THROW_ON_ERROR);
+                $statusCode = 500;
 
-            if ($e->errorInfo[1] === 1062) {
-                $message = explode(" for ", $e->errorInfo[2])[0];
-                $statusCode = 409;
+                if ($e->errorInfo[1] === 1062) {
+                    $message = explode(" for ", $e->errorInfo[2])[0];
+                    $statusCode = 409;
+                }
+            } catch (\JsonException $e) {
+                $message = $e->getMessage();
+                $statusCode = 500;
             }
         } catch (\Exception $e) {
             $message = $e->getMessage();
@@ -128,7 +121,6 @@ class MemberController extends Controller
     public function edit(Member $member)
     {
         $data['member'] = $member;
-        $data['formAction'] = route('members.update', $member->id);
 
         return view('members.form', $data);
     }
@@ -148,12 +140,17 @@ class MemberController extends Controller
             $message = 'User Updated successfully';
             $statusCode = 200;
         } catch (QueryException $e) {
-            $message = json_encode($e->errorInfo);
-            $statusCode = 400;
+            try {
+                $message = json_encode($e->errorInfo, JSON_THROW_ON_ERROR);
+                $statusCode = 500;
 
-            if ($e->errorInfo[1] === 1062) {
-                $message = explode(" for ", $e->errorInfo[2])[0];
-                $statusCode = 409;
+                if ($e->errorInfo[1] === 1062) {
+                    $message = explode(" for ", $e->errorInfo[2])[0];
+                    $statusCode = 409;
+                }
+            } catch (\JsonException $e) {
+                $message = $e->getMessage();
+                $statusCode = 500;
             }
         } catch (\Exception $e) {
             $message = $e->getMessage();
@@ -177,8 +174,13 @@ class MemberController extends Controller
             $message = 'User Deleted successfully';
             $statusCode = 200;
         } catch (QueryException $e) {
-            $message = json_encode($e->errorInfo);
-            $statusCode = 400;
+            try {
+                $message = json_encode($e->errorInfo, JSON_THROW_ON_ERROR);
+                $statusCode = 500;
+            } catch (\JsonException $e) {
+                $message = $e->getMessage();
+                $statusCode = 500;
+            }
         } catch (\Exception $e) {
             $message = $e->getMessage();
             $statusCode = 500;

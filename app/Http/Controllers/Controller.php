@@ -11,5 +11,4 @@ use Illuminate\Http\JsonResponse;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
 }

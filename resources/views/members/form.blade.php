@@ -23,7 +23,7 @@
         </div>
 
         <div class="d-flex justify-content-center">
-            <form method="post" action="{{ $formAction }}" enctype="multipart/form-data" id="main_form">
+            <form id="main_form" @if($member->id) action="{{ route('members.update', $member->id) }}" @else action="{{ route('members.store') }}" @endif method="post" enctype="multipart/form-data">
                 @csrf
                 @if($member->id)
                     @method('patch')
