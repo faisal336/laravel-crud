@@ -3,9 +3,8 @@
 use App\Http\Controllers\MemberController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\ApiAuthController;
-
+use Laravel\Fortify\Http\Controllers\RegisteredUserController;
+use App\Http\Controllers\MobileAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,19 +17,27 @@ use App\Http\Controllers\ApiAuthController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Mobile API Routes
+Route::group([], function () {
+    Route::post("/mobile/register", [MobileAuthController::class, 'register']);
+    Route::post("/mobile/login", [MobileAuthController::class, 'login']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post("/mobile/logout", [MobileAuthController::class, 'logout']);
+    });
 });
 
-//Route::apiResource('/members', MemberController::class);
-
- Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-     Route::apiResource('/members', MemberController::class);
- });
-
-
-Route::post("/registers",[ApiAuthController::class,'register']);
-Route::post("/logins",[ApiAuthController::class,'login']);
-Route::group(['middleware'=>['auth:sanctum']],function(){
-    Route::post("/logouts",[ApiAuthController::class,'logout']);
+// SPA Fortify Routes
+Route::group([], function () {
+    Route::post('/register', [RegisteredUserController::class, 'store'])
+        ->middleware(['guest:' . config('fortify.guard')]);
 });
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::apiResource('members', MemberController::class);
+});
+
