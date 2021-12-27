@@ -15,8 +15,6 @@
         }
     </style>
 
-    <input type="hidden" value="{{ route('members.show', ':id') }}" id="members_show_url">
-
     <div class="container mt-5">
         <div class="mt-3">
             <a href="{{ route('members.index') }}">Listing</a> > <i class="text-gray-200">Member Form</i>
@@ -112,7 +110,11 @@
                             alert("User Created Successfully");
 
                             let id = response.data;
-                            location.href = $('#members_show_url').val().replace(":id", id);
+
+                            let url = "{{ route('members.show', ':id') }}";
+                            url = url.replace(':id', id);
+
+                            location.href = url;
                         } else {
                             alert(response.data)
                         }
