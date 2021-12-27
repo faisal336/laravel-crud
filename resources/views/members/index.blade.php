@@ -78,7 +78,6 @@
                             edit_url = edit_url.replace(':id', row.id);
 
                             return `
-
                                 <a href="${show_url}" class="edit btn btn-primary btn-sm"><i class="fa fa-eye"></i></a> |
                                 <a href="${edit_url}" class="edit btn btn-success btn-sm"><i class="fa fa-edit"></i></a> |
                                 <button type="button" class="destroy btn btn-danger btn-sm" id="deleteRecord" onclick="deleteRecord(${row.id})"><i class="fa fa-trash"></i></button> |
@@ -114,9 +113,8 @@
                 if (!confirm("Are you sure you want to Delete This?"))
                     return false;
 
-                let url = "{{ route('members.destroy', 'id') }}";
-                url = url.replace('id', id);
-
+                let url = "{{ route('members.destroy', ':id') }}";
+                url = url.replace(':id', id);
 
                 axios.post(url, {"_method": 'delete'})
                     .then(function (response) {
