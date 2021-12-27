@@ -60,24 +60,24 @@ class MobileAuthController extends Controller
     }
 
     /**
+     * @param Request $request
      * @return Response
      */
-    public function logout(): Response
+    public function logout(Request $request): Response
     {
         $user = auth()->user();
 
-        if(!$user) {
+        if (!$user) {
             return response('', 401);
         }
 
-        // Revoke all tokens....
-        // $user->tokens()->delete();
-
-        // Revoke the token that was used to authenticate the current request...
-        $user->currentAccessToken()->delete();
-
-        // Revoke a specific token...
-        // $user->tokens()->where('id', $tokenId)->delete();
+        if ($request->delete_all) {
+            // Revoke all tokens....
+            $user->tokens()->delete();
+        } else {
+            // Revoke the token that was used to authenticate the current request...
+            $user->currentAccessToken()->delete();
+        }
 
         return response('', 204);
     }
