@@ -6,17 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ModelObserver
 {
-    public $userID;
-
-    public function __construct($userID = null)
-    {
-        if (is_null($userID)) {
-            $this->userID = auth()->id() ?: Auth('api')->id();
-        } else {
-            $this->userID = $userID;
-        }
-    }
-
     /**
      * retrieved,
      * creating,
@@ -40,7 +29,7 @@ class ModelObserver
      */
     public function creating(Model $model): void
     {
-        $model->created_by = $this->userID;
+        $model->created_by = auth()->id();
     }
 
     /**
@@ -51,7 +40,7 @@ class ModelObserver
      */
     public function updating(Model $model): void
     {
-        $model->updated_by = $this->userID;
+        $model->updated_by = auth()->id();
     }
 
     /**
@@ -62,6 +51,6 @@ class ModelObserver
      */
     public function deleting(Model $model): void
     {
-        $model->deleted_by = $this->userID;
+        $model->deleted_by = auth()->id();
     }
 }
