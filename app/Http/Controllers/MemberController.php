@@ -99,12 +99,12 @@ class MemberController extends Controller
      *
      * @param Request $request
      * @param Member $member
-     * @return Response|View|Factory
+     * @return Member|View|Factory
      */
     public function show(Request $request, Member $member)
     {
         if ($request->expectsJson()) {
-            return response($member);
+            return $member;
         }
 
         $data['member'] = $member;
@@ -168,35 +168,20 @@ class MemberController extends Controller
      */
     public function destroy(Member $member): Response
     {
-        try {
-            $member->delete();
+        $member->delete();
 
-            $message = 'User Deleted successfully';
-            $statusCode = 200;
-        } catch (QueryException $e) {
-            try {
-                $message = json_encode($e->errorInfo, JSON_THROW_ON_ERROR);
-                $statusCode = 500;
-            } catch (\JsonException $e) {
-                $message = $e->getMessage();
-                $statusCode = 500;
-            }
-        } catch (\Exception $e) {
-            $message = $e->getMessage();
-            $statusCode = 500;
-        }
-
-        return response($message, $statusCode);
+        return response('', 204);
     }
 
     /**
      * @param Request $request
-     * @return Response
+     * @return string
      */
-    public function showTable(Request $request): Response
+    public function showTable(Request $request): string
     {
         $id = $request->input('id', 0);
-        $table = "
+
+        return "
             <table class='table table-striped'>
             <tr>
                 <td>something: $id</td>
@@ -206,7 +191,5 @@ class MemberController extends Controller
             </tr>
             </table>
         ";
-
-        return response($table);
     }
 }
